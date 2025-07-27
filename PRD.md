@@ -179,7 +179,160 @@ Create a sophisticated real-time dashboard that showcases the power of Elixir's 
 
 ## 5. Architecture Requirements
 
-### 5.1 Modular Design Requirement
+### 5.1 Current Directory Structure
+
+**Current Implementation Structure** (as built):
+
+```
+test2/
+├── .github/                    # GitHub CI/CD and templates
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.yml
+│   │   └── feature_request.yml
+│   ├── PULL_REQUEST_TEMPLATE/
+│   │   └── pull_request_template.md
+│   └── workflows/
+│       ├── ci.yml             # Main CI/CD pipeline
+│       └── release.yml        # Release automation
+├── assets/                     # Phoenix frontend assets
+│   ├── css/
+│   │   └── app.css           # Main stylesheet
+│   ├── js/
+│   │   └── app.js            # JavaScript with auto-scroll hooks
+│   ├── vendor/
+│   │   └── topbar.js         # Loading indicator
+│   ├── package.json          # Node.js dependencies
+│   └── tailwind.config.js    # Tailwind CSS configuration
+├── config/                     # Application configuration
+│   ├── config.exs            # Base configuration
+│   ├── dev.exs               # Development settings
+│   ├── prod.exs              # Production settings
+│   ├── runtime.exs           # Runtime configuration
+│   └── test.exs              # Test environment
+├── dashboard/                  # Svelte standalone dashboard
+│   ├── src/
+│   │   ├── lib/
+│   │   │   ├── components/
+│   │   │   │   ├── Header.svelte      # Dashboard header
+│   │   │   │   ├── InvoiceGrid.svelte # Invoice data grid
+│   │   │   │   ├── StatsStrip.svelte  # Statistics display
+│   │   │   │   └── TotalsCards.svelte # Metric cards
+│   │   │   ├── stores/
+│   │   │   │   └── dashboard.js       # State management
+│   │   │   └── index.js
+│   │   ├── routes/
+│   │   │   ├── +page.svelte          # Main dashboard page
+│   │   │   └── test/
+│   │   │       └── +page.svelte      # Test suite page
+│   │   ├── app.d.ts          # TypeScript definitions
+│   │   └── app.html          # HTML template
+│   ├── static/
+│   │   └── favicon.svg
+│   ├── package.json          # Svelte dependencies
+│   ├── svelte.config.js      # Svelte configuration
+│   └── vite.config.js        # Vite build configuration
+├── lib/                        # Elixir application code
+│   ├── test2/                  # Core business logic
+│   │   ├── application.ex      # OTP application supervisor
+│   │   ├── repo.ex            # Database interface
+│   │   ├── cache/             # Redis caching layer
+│   │   │   └── stats_cache.ex # Statistics caching
+│   │   ├── invoices/          # Invoice domain
+│   │   │   ├── generator.ex   # Random invoice generation
+│   │   │   ├── invoice.ex     # Invoice schema/model
+│   │   │   └── stats.ex       # Statistics calculations
+│   │   └── streaming/         # Real-time streaming system
+│   │       ├── broadcaster.ex  # PubSub message manager
+│   │       ├── buffer.ex      # Display rate limiting (2/sec)
+│   │       ├── coordinator.ex # Main control GenServer
+│   │       ├── producer.ex    # Invoice producer (5/sec)
+│   │       ├── stats_aggregator.ex # Real-time stats
+│   │       └── supervisor.ex  # Streaming supervision tree
+│   ├── test2_web.ex           # Web module definition
+│   └── test2_web/             # Phoenix web layer
+│       ├── channels/          # WebSocket channels
+│       │   ├── dashboard_channel.ex # Real-time dashboard channel
+│       │   └── user_socket.ex # Socket configuration
+│       ├── components/        # LiveView components
+│       │   ├── core_components.ex # Base UI components
+│       │   ├── layouts.ex     # Layout components
+│       │   └── layouts/
+│       │       ├── app.html.heex    # App layout template
+│       │       └── root.html.heex   # Root layout template
+│       ├── controllers/       # HTTP controllers
+│       │   ├── api/
+│       │   │   └── dashboard_controller.ex # API endpoints
+│       │   ├── api_controller.ex # Base API controller
+│       │   ├── error_html.ex  # HTML error handling
+│       │   └── error_json.ex  # JSON error handling
+│       ├── live/              # LiveView pages
+│       │   └── dashboard_live.ex # Main dashboard LiveView
+│       ├── plugs/             # Custom plugs
+│       │   └── cors.ex        # CORS handling
+│       ├── endpoint.ex        # Phoenix endpoint
+│       ├── gettext.ex         # Internationalization
+│       ├── router.ex          # URL routing
+│       └── telemetry.ex       # Application metrics
+├── priv/                       # Private application files
+│   ├── repo/
+│   │   └── migrations/        # Database migrations
+│   │       ├── 001_create_invoices.exs
+│   │       └── 002_add_trade_fields.exs
+│   └── static/                # Static assets (compiled)
+│       └── assets/
+│           ├── app.css
+│           └── app.js
+├── Documentation Files         # Project documentation
+│   ├── CHANGELOG.md           # Version history
+│   ├── FIX_SUMMARY.md         # Bug fixes and improvements
+│   ├── PRD.md                 # This requirements document
+│   ├── README.md              # Project overview and setup
+│   └── TESTING_INSTRUCTIONS.md # Testing procedures
+├── Configuration Files         # Project configuration
+│   ├── .credo.exs             # Code quality configuration
+│   ├── .gitignore             # Git ignore rules
+│   ├── coveralls.json         # Test coverage configuration
+│   ├── mix.exs                # Elixir project definition
+│   ├── mix.lock               # Dependency lock file
+│   └── start_servers.sh       # Development server startup script
+└── Build/Dependencies          # Generated directories
+    ├── _build/                 # Elixir build artifacts
+    ├── deps/                   # Elixir dependencies
+    └── node_modules/           # Node.js dependencies (in assets/ and dashboard/)
+```
+
+**Key Architecture Highlights**:
+
+1. **Dual Frontend Approach**: 
+   - Phoenix LiveView (`lib/test2_web/live/`) for server-rendered real-time UI
+   - Standalone Svelte app (`dashboard/`) for client-side alternative
+
+2. **Modular Elixir Organization**:
+   - `invoices/` - Domain logic and data models
+   - `streaming/` - Real-time processing with GenServer actors  
+   - `cache/` - Redis performance optimization
+   - `test2_web/` - Web interface and API layer
+
+3. **OTP Actor Processes**:
+   - `coordinator.ex` - Master control process
+   - `producer.ex` - Invoice generation (5/sec)
+   - `buffer.ex` - Display rate limiting (2/sec)
+   - `broadcaster.ex` - PubSub message distribution
+   - `stats_aggregator.ex` - Real-time statistics
+
+4. **Real-time Communication**:
+   - Phoenix PubSub for internal message passing
+   - LiveView for server-side real-time updates
+   - WebSocket channels for external dashboard
+   - Auto-scroll JavaScript hooks for smooth UX
+
+5. **DevOps & Quality**:
+   - GitHub Actions CI/CD pipeline
+   - Code quality tools (Credo, Dialyzer, ExCoveralls)
+   - Automated testing and deployment
+   - Comprehensive documentation
+
+### 5.2 Modular Design Requirement
 **Requirement ID**: AR-001  
 **Priority**: High
 
