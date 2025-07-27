@@ -50,7 +50,13 @@ defmodule Test2.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:redix, "~> 1.1"},
       {:faker, "~> 0.17"},
-      {:decimal, "~> 2.0"}
+      {:decimal, "~> 2.0"},
+      
+      # Development and testing
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
+      {:excoveralls, "~> 0.16", only: :test},
+      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false}
     ]
   end
 
