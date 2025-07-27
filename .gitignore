@@ -1,0 +1,125 @@
+# The directory Mix will write compiled artifacts to.
+/_build/
+
+# If you run "mix test --cover", coverage assets end up here.
+/cover/
+
+# The directory Mix downloads your dependencies sources to.
+/deps/
+
+# Where third-party dependencies like ExDoc output generated docs.
+/doc/
+
+# Ignore .fetch files in case you like to edit your project deps locally.
+/.fetch
+
+# If the VM crashes, it generates a dump, let's ignore it too.
+erl_crash.dump
+
+# Also ignore archive artifacts (built via "mix archive.build").
+*.ez
+
+# Ignore package tarball (built via "mix hex.build").
+test2-*.tar
+
+# Temporary files, for example, from tests.
+/tmp/
+
+# Since we are building assets from assets/,
+# we ignore priv/static. You may want to comment
+# this depending on your deployment strategy.
+/priv/static/
+
+# Files matching config/*.secret.exs pattern contain sensitive
+# data and you should not commit them into version control.
+#
+# Alternatively, you may comment the line below and commit the
+# secrets files as long as you replace their contents by environment
+# variables.
+/config/*.secret.exs
+
+# IntelliJ
+/.idea/
+
+# VSCode
+/.vscode/
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Vim
+*.swp
+*.swo
+
+# MacOS
+.DS_Store
+
+# Node.js
+/assets/node_modules/
+/dashboard/node_modules/
+/priv/static/assets/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.db-journal
+
+# Logs
+*.log
+
+# Editor backup files
+*~
+*.bak
+*.tmp
+*.orig
+
+# OS generated files
+Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Runtime and compiled files
+*.beam
+*.plt
+*.ex~
+
+# Package management
+mix.lock.old
+
+# Test artifacts
+test/support/fixtures/*.sql
+
+# Production secrets
+/rel/
+/config/prod.secret.exs
+
+# CI/CD and deployment
+.github/workflows/*.log
+coverage/
+.nyc_output/
+junit.xml
+.coverage/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Kubernetes
+k8s-*.yaml

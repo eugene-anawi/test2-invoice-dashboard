@@ -1,0 +1,12 @@
+{
+  "name": "test2-assets",
+  "version": "1.0.0",
+  "description": "Asset compilation for Test2 Phoenix app",
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7"
+  },
+  "scripts": {
+    "build": "echo 'Assets built'",
+    "watch": "echo 'Assets watching'"
+  }
+}
